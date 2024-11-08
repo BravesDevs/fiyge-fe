@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import PropertiesPanel from "./components/PropertiesPanel";
+import { useDropzone } from "react-dropzone"; // Import react-dropzone
 
 const App = () => {
   const [elements, setElements] = useState([]);
@@ -28,6 +29,21 @@ const App = () => {
       placeholder: "Choose an option",
       required: false,
       options: ["Option 1", "Option 2"],
+    },
+    {
+      id: "file-upload",
+      type: "file",
+      label: "File Upload",
+      placeholder: "Upload a file",
+      required: false,
+    },
+
+    {
+      id: "date-picker",
+      type: "date",
+      label: "Date Picker",
+      placeholder: "Select Date",
+      required: false,
     },
   ];
 
@@ -60,6 +76,17 @@ const App = () => {
 
   const handleClosePanel = () => {
     setCurrentEditingElement(null); // Close the properties panel by setting it to null
+  };
+
+  // File dropzone handler
+  const handleFileDrop = (acceptedFiles, elementId) => {
+    setElements((prevElements) =>
+      prevElements.map((el) =>
+        el.id === elementId
+          ? { ...el, files: [...(el.files || []), ...acceptedFiles] }
+          : el
+      )
+    );
   };
 
   return (
@@ -167,6 +194,44 @@ const App = () => {
                               </select>
                             </div>
                           )}
+                          {/* Adjust for date picker */}
+                          {element.type === "date" && (
+                            <div>
+                              <label className="block font-semibold">
+                                {element.label}
+                              </label>
+                              <input
+                                type="date"
+                                placeholder={element.placeholder}
+                                className="p-2 border border-gray-300 rounded w-full"
+                              />
+                            </div>
+                          )}
+                          {element.type === "file" && (
+                            <div className="p-4 border border-gray-300 rounded bg-gray-50">
+                              <label className="block font-semibold">
+                                {element.label}
+                              </label>
+                              <div className="mt-2">
+                                <FileUploadDroppable
+                                  elementId={element.id}
+                                  onDrop={handleFileDrop}
+                                />
+                              </div>
+                              {element.files && element.files.length > 0 && (
+                                <div className="mt-2">
+                                  <h4 className="font-semibold">
+                                    Uploaded Files
+                                  </h4>
+                                  <ul>
+                                    {element.files.map((file, idx) => (
+                                      <li key={idx}>{file.name}</li>
+                                    ))}
+                                  </ul>
+                                </div>
+                              )}
+                            </div>
+                          )}
                         </div>
                       )}
                     </Draggable>
@@ -188,6 +253,25 @@ const App = () => {
         />
       )}
     </DragDropContext>
+  );
+};
+
+// File Upload Droppable Component
+const FileUploadDroppable = ({ elementId, onDrop }) => {
+  const { getRootProps, getInputProps } = useDropzone({
+    onDrop: (acceptedFiles) => onDrop(acceptedFiles, elementId),
+    accept: ".jpg,.jpeg,.png,.gif,.pdf,.doc,.docx",
+    multiple: true,
+  });
+
+  return (
+    <div
+      {...getRootProps()}
+      className="border-2 border-dashed p-4 text-center cursor-pointer"
+    >
+      <input {...getInputProps()} />
+      <p>Drag & Drop files here, or click to select files</p>
+    </div>
   );
 };
 
