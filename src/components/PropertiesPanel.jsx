@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-const PropertiesPanel = ({ element, onUpdate }) => {
+const PropertiesPanel = ({ element, onUpdate, onClose }) => {
   const [label, setLabel] = useState(element.label);
   const [placeholder, setPlaceholder] = useState(element.placeholder);
   const [required, setRequired] = useState(element.required);
@@ -15,6 +15,7 @@ const PropertiesPanel = ({ element, onUpdate }) => {
 
   const handleUpdate = () => {
     onUpdate({ ...element, label, placeholder, required, options });
+    onClose(); // Close the panel after saving
   };
 
   const addOption = () => {
