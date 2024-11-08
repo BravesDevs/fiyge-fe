@@ -75,10 +75,9 @@ const App = () => {
   };
 
   const handleClosePanel = () => {
-    setCurrentEditingElement(null); // Close the properties panel by setting it to null
+    setCurrentEditingElement(null);
   };
 
-  // File dropzone handler
   const handleFileDrop = (acceptedFiles, elementId) => {
     setElements((prevElements) =>
       prevElements.map((el) =>
@@ -149,7 +148,7 @@ const App = () => {
                           {...provided.draggableProps}
                           {...provided.dragHandleProps}
                           className="p-3 mb-3 bg-white border border-gray-300 rounded shadow-sm"
-                          onClick={() => handleEditClick(element)} // Handle click to edit
+                          onClick={() => handleEditClick(element)}
                         >
                           {element.type === "text" && (
                             <div>
@@ -194,7 +193,6 @@ const App = () => {
                               </select>
                             </div>
                           )}
-                          {/* Adjust for date picker */}
                           {element.type === "date" && (
                             <div>
                               <label className="block font-semibold">
@@ -244,19 +242,17 @@ const App = () => {
         </div>
       </div>
 
-      {/* Editable Properties Section */}
       {currentEditingElement && (
         <PropertiesPanel
           element={currentEditingElement}
           onUpdate={updateElement}
-          onClose={handleClosePanel} // Ensure onClose is passed here
+          onClose={handleClosePanel}
         />
       )}
     </DragDropContext>
   );
 };
 
-// File Upload Droppable Component
 const FileUploadDroppable = ({ elementId, onDrop }) => {
   const { getRootProps, getInputProps } = useDropzone({
     onDrop: (acceptedFiles) => onDrop(acceptedFiles, elementId),

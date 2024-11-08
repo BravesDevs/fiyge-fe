@@ -6,14 +6,14 @@ const PropertiesPanel = ({ element, onUpdate, onClose }) => {
   const [placeholder, setPlaceholder] = useState(element.placeholder);
   const [required, setRequired] = useState(element.required);
   const [options, setOptions] = useState(element.options || []);
-  const [files, setFiles] = useState(element.files || []); // Track uploaded files
+  const [files, setFiles] = useState(element.files || []);
 
   useEffect(() => {
     setLabel(element.label);
     setPlaceholder(element.placeholder);
     setRequired(element.required);
     setOptions(element.options || []);
-    setFiles(element.files || []); // Update files on element change
+    setFiles(element.files || []);
   }, [element]);
 
   const handleUpdate = () => {
@@ -37,15 +37,14 @@ const PropertiesPanel = ({ element, onUpdate, onClose }) => {
     setOptions(newOptions);
   };
 
-  // Dropzone setup for file upload
   const onDrop = (acceptedFiles) => {
     setFiles((prevFiles) => [...prevFiles, ...acceptedFiles]);
   };
 
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
-    accept: ".jpg,.jpeg,.png,.gif,.pdf,.doc,.docx", // Accept specific file types
-    multiple: true, // Allow multiple file uploads
+    accept: ".jpg,.jpeg,.png,.gif,.pdf,.doc,.docx",
+    multiple: true,
   });
 
   const removeFile = (index) => {
@@ -114,7 +113,6 @@ const PropertiesPanel = ({ element, onUpdate, onClose }) => {
           </div>
         )}
 
-        {/* Only show file upload section if element type is 'file' */}
         {element.type === "file" && (
           <>
             <div
@@ -127,7 +125,6 @@ const PropertiesPanel = ({ element, onUpdate, onClose }) => {
               </p>
             </div>
 
-            {/* Display uploaded files */}
             {files.length > 0 && (
               <div className="mt-4">
                 <h3 className="font-semibold mb-2">Uploaded Files</h3>
