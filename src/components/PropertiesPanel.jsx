@@ -1,13 +1,36 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-const PropertiesPanel = ({ element, onUpdate, onClose }) => {
+const PropertiesPanel = ({ element, onUpdate }) => {
   const [label, setLabel] = useState(element.label);
   const [placeholder, setPlaceholder] = useState(element.placeholder);
   const [required, setRequired] = useState(element.required);
+  const [options, setOptions] = useState(element.options || []);
+
+  useEffect(() => {
+    setLabel(element.label);
+    setPlaceholder(element.placeholder);
+    setRequired(element.required);
+    setOptions(element.options || []);
+  }, [element]);
 
   const handleUpdate = () => {
-    onUpdate({ ...element, label, placeholder, required });
-    onClose();
+    onUpdate({ ...element, label, placeholder, required, options });
+  };
+
+  const addOption = () => {
+    setOptions([...options, ""]);
+  };
+
+  const removeOption = (index) => {
+    const newOptions = [...options];
+    newOptions.splice(index, 1);
+    setOptions(newOptions);
+  };
+
+  const handleOptionChange = (index, value) => {
+    const newOptions = [...options];
+    newOptions[index] = value;
+    setOptions(newOptions);
   };
 
   return (
@@ -43,9 +66,35 @@ const PropertiesPanel = ({ element, onUpdate, onClose }) => {
             className="mb-4"
           />
         </div>
+        {element.type === "select" && (
+          <div>
+            <h3 className="font-semibold mb-2">Options</h3>
+            {options.map((option, index) => (
+              <div key={index} className="flex items-center mb-2">
+                <input
+                  type="text"
+                  value={option}
+                  onChange={(e) => handleOptionChange(index, e.target.value)}
+                  className="p-2 border border-gray-300 rounded w-full"
+                  placeholder={`Option ${index + 1}`}
+                />
+                <button
+                  type="button"
+                  onClick={() => removeOption(index)}
+                  className="ml-2 text-red-500"
+                >
+                  Remove
+                </button>
+              </div>
+            ))}
+            <button type="button" onClick={addOption} className="text-blue-500">
+              Add Option
+            </button>
+          </div>
+        )}
         <button
           onClick={handleUpdate}
-          className="w-full bg-blue-500 text-white p-2 rounded"
+          className="w-full bg-blue-500 text-white p-2 rounded mt-4"
         >
           Save
         </button>

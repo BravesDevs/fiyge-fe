@@ -21,6 +21,14 @@ const App = () => {
       placeholder: "Enter long text",
       required: false,
     },
+    {
+      id: "select",
+      type: "select",
+      label: "Select Dropdown",
+      placeholder: "Choose an option",
+      required: false,
+      options: ["Option 1", "Option 2"],
+    },
   ];
 
   const updateElement = (updatedElement) => {
@@ -139,6 +147,26 @@ const App = () => {
                               />
                             </div>
                           )}
+                          {element.type === "select" && (
+                            <div>
+                              <label className="block font-semibold">
+                                {element.label}
+                              </label>
+                              <select
+                                className="p-2 border border-gray-300 rounded w-full"
+                                defaultValue=""
+                              >
+                                <option value="" disabled>
+                                  {element.placeholder}
+                                </option>
+                                {element.options.map((option, idx) => (
+                                  <option key={idx} value={option}>
+                                    {option}
+                                  </option>
+                                ))}
+                              </select>
+                            </div>
+                          )}
                         </div>
                       )}
                     </Draggable>
@@ -156,7 +184,7 @@ const App = () => {
         <PropertiesPanel
           element={currentEditingElement}
           onUpdate={updateElement}
-          onClose={handleClosePanel} // Make sure onClose is passed here correctly
+          onClose={handleClosePanel} // Ensure onClose is passed here
         />
       )}
     </DragDropContext>
