@@ -1,6 +1,7 @@
 import { Droppable, Draggable } from "react-beautiful-dnd";
+import EditableFormElement from "./EditableFormElement";
 
-const FormBuilderCanvas = ({ elements }) => (
+const FormBuilderCanvas = ({ elements, updateElement }) => (
   <Droppable droppableId="canvas">
     {(provided) => (
       <div
@@ -18,10 +19,12 @@ const FormBuilderCanvas = ({ elements }) => (
                 ref={provided.innerRef}
                 {...provided.draggableProps}
                 {...provided.dragHandleProps}
-                className="p-3 mb-3 bg-white border border-gray-300 rounded shadow-sm"
+                className="p-2"
               >
-                <div className="font-semibold">{element.label}</div>
-                <p className="text-sm text-gray-500">{element.placeholder}</p>
+                <EditableFormElement
+                  element={element}
+                  updateElement={updateElement}
+                />
               </div>
             )}
           </Draggable>
