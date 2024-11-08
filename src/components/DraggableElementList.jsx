@@ -1,41 +1,30 @@
-import { Draggable, Droppable } from "react-beautiful-dnd";
+import { Draggable } from "react-beautiful-dnd";
 
-const ELEMENTS = [
-  { id: "text-input", content: "Text Input" },
-  { id: "text-area", content: "Text Area" },
-  { id: "select-dropdown", content: "Select Dropdown" },
-  { id: "checkbox", content: "Checkbox" },
-  { id: "radio-button", content: "Radio Button" },
-  { id: "date-picker", content: "Date Picker" },
-  { id: "file-upload", content: "File Upload" },
-];
+const DraggableElementList = () => {
+  const elements = [
+    { id: "text-input", label: "Text Input" },
+    { id: "text-area", label: "Text Area" },
+    // Add more form elements here as needed
+  ];
 
-const DraggableElementList = () => (
-  <Droppable droppableId="element-list" isDropDisabled>
-    {(provided) => (
-      <div
-        ref={provided.innerRef}
-        {...provided.droppableProps}
-        className="p-4 border border-gray-300 rounded-md bg-white shadow-md"
-      >
-        {ELEMENTS.map((el, index) => (
-          <Draggable key={el.id} draggableId={el.id} index={index}>
-            {(provided) => (
-              <div
-                ref={provided.innerRef}
-                {...provided.draggableProps}
-                {...provided.dragHandleProps}
-                className="p-2 mb-2 bg-gray-100 border border-gray-300 rounded cursor-pointer hover:bg-gray-200"
-              >
-                {el.content}
-              </div>
-            )}
-          </Draggable>
-        ))}
-        {provided.placeholder}
-      </div>
-    )}
-  </Droppable>
-);
+  return (
+    <div className="space-y-4">
+      {elements.map((element, index) => (
+        <Draggable key={element.id} draggableId={element.id} index={index}>
+          {(provided) => (
+            <div
+              ref={provided.innerRef}
+              {...provided.draggableProps}
+              {...provided.dragHandleProps}
+              className="p-2 bg-gray-100 rounded shadow-sm"
+            >
+              {element.label}
+            </div>
+          )}
+        </Draggable>
+      ))}
+    </div>
+  );
+};
 
 export default DraggableElementList;
