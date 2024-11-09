@@ -6,11 +6,9 @@ import axios from "axios";
 const FormBuilderCanvas = ({ elements, updateElement }) => {
   const [isSaving, setIsSaving] = useState(false);
 
-  // Function to generate a random form name
   const generateFormName = () =>
     `Form_${Math.random().toString(36).substring(2, 8)}`;
 
-  // Function to handle form save
   const handleSaveForm = async () => {
     setIsSaving(true);
     const formName = generateFormName();
@@ -35,24 +33,22 @@ const FormBuilderCanvas = ({ elements, updateElement }) => {
   };
 
   return (
-    <div style={{ border: "2px solid #e2e8f0", padding: "10px" }}>
-      <div
-        className="mb-4"
-        style={{ marginBottom: "16px", textAlign: "center" }}
-      >
+    <div className="border-2 border-gray-300 p-6 ro unded-lg shadow-lg bg-white">
+      <div className="flex justify-center space-x-4 mb-6">
         <button
           onClick={handleSaveForm}
-          className="px-4 py-2 bg-blue-500 text-white rounded-md"
+          className={`px-6 py-2 font-semibold rounded-lg text-white ${
+            isSaving ? "bg-blue-400" : "bg-blue-500 hover:bg-blue-600"
+          }`}
           disabled={isSaving}
-          style={{
-            padding: "10px 20px",
-            backgroundColor: "blue",
-            color: "white",
-            borderRadius: "8px",
-            cursor: isSaving ? "not-allowed" : "pointer",
-          }}
         >
           {isSaving ? "Saving..." : "Save Form"}
+        </button>
+        <button
+          className="px-6 py-2 font-semibold rounded-lg text-gray-700 bg-gray-100 hover:bg-gray-200"
+          onClick={() => alert("Edit Form clicked!")}
+        >
+          Edit Form
         </button>
       </div>
 
@@ -61,14 +57,7 @@ const FormBuilderCanvas = ({ elements, updateElement }) => {
           <div
             ref={provided.innerRef}
             {...provided.droppableProps}
-            className="p-4 border border-dashed border-gray-400 rounded-md min-h-[300px] bg-gray-50"
-            style={{
-              padding: "16px",
-              border: "2px dashed gray",
-              borderRadius: "8px",
-              minHeight: "300px",
-              backgroundColor: "#f9fafb",
-            }}
+            className="p-4 border-2 border-dashed border-gray-400 rounded-md min-h-[300px] bg-gray-50 flex flex-col items-center justify-center space-y-4"
           >
             {elements.length === 0 && (
               <p className="text-center text-gray-400">Drag components here</p>
@@ -84,8 +73,7 @@ const FormBuilderCanvas = ({ elements, updateElement }) => {
                     ref={provided.innerRef}
                     {...provided.draggableProps}
                     {...provided.dragHandleProps}
-                    className="p-2"
-                    style={{ padding: "10px" }}
+                    className="p-4 w-full bg-white rounded-lg shadow-sm border border-gray-200"
                   >
                     <EditableFormElement
                       element={element}

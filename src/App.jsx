@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-import { useDropzone } from "react-dropzone"; // Import react-dropzone
+import { useDropzone } from "react-dropzone";
 import axios from "axios";
 import PropertiesPanel from "./components/PropertiesPanel";
 
@@ -59,7 +59,6 @@ const App = () => {
   const handleDragEnd = (result) => {
     const { source, destination } = result;
     if (!destination) return;
-
     const droppedElement = availableElements.find(
       (el) => el.id === result.draggableId
     );
@@ -89,19 +88,13 @@ const App = () => {
     );
   };
 
-  // Function to generate a random form name
   const generateFormName = () =>
     `Form_${Math.random().toString(36).substring(2, 8)}`;
 
-  // Function to handle form save
   const handleSaveForm = async () => {
     setIsSaving(true);
     const formName = generateFormName();
-
-    const payload = {
-      form_name: formName,
-      form_data: { elements },
-    };
+    const payload = { form_name: formName, form_data: { elements } };
 
     try {
       const response = await axios.post(
@@ -118,27 +111,29 @@ const App = () => {
   };
 
   return (
-    <div>
-      <div className="mb-4">
+    <div className="p-6">
+      <div className="flex justify-end gap-4 mb-6">
         <button
           onClick={handleSaveForm}
-          className="px-4 py-2 bg-blue-500 text-white rounded-md"
+          className="px-4 py-2 bg-blue-600 text-white rounded-lg"
           disabled={isSaving}
         >
           {isSaving ? "Saving..." : "Save Form"}
         </button>
+        <button
+          onClick={() => alert("Edit Form")}
+          className="px-4 py-2 bg-green-500 text-white rounded-lg"
+        >
+          Edit Form
+        </button>
       </div>
 
       <DragDropContext onDragEnd={handleDragEnd}>
-        <div className="flex">
-          <div className="w-1/4 p-4">
+        <div className="flex gap-6">
+          <div className="w-1/4 p-4 bg-gray-100 rounded-lg shadow-md">
             <Droppable droppableId="available-elements">
               {(provided) => (
-                <div
-                  ref={provided.innerRef}
-                  {...provided.droppableProps}
-                  className="bg-gray-100 p-4 rounded shadow-md"
-                >
+                <div ref={provided.innerRef} {...provided.droppableProps}>
                   {availableElements.map((element, index) => (
                     <Draggable
                       key={element.id}
@@ -150,7 +145,7 @@ const App = () => {
                           ref={provided.innerRef}
                           {...provided.draggableProps}
                           {...provided.dragHandleProps}
-                          className="p-2 mb-2 bg-white border border-gray-300 rounded shadow-sm"
+                          className="p-3 mb-3 bg-white border rounded-lg shadow-sm"
                         >
                           {element.label}
                         </div>
@@ -163,13 +158,13 @@ const App = () => {
             </Droppable>
           </div>
 
-          <div className="w-3/4 p-4">
-            <Droppable droppableId="canvas" direction="vertical">
+          <div className="w-3/4 p-4 bg-gray-50 rounded-lg shadow-md">
+            <Droppable droppableId="canvas">
               {(provided) => (
                 <div
                   ref={provided.innerRef}
                   {...provided.droppableProps}
-                  className="bg-gray-100 p-4 rounded shadow-md min-h-screen"
+                  className="min-h-[500px] bg-white p-6 border-2 border-dashed border-gray-300 rounded-lg"
                 >
                   {elements.length === 0 ? (
                     <div className="text-center text-gray-500">
@@ -187,41 +182,30 @@ const App = () => {
                             ref={provided.innerRef}
                             {...provided.draggableProps}
                             {...provided.dragHandleProps}
-                            className="p-3 mb-3 bg-white border border-gray-300 rounded shadow-sm"
-                            onClick={() => handleEditClick(element)}
+                            className="p-4 mb-4 bg-white border border-gray-300 rounded-lg shadow-sm"
                           >
-                            {element.type === "text" && (
-                              <div>
-                                <label className="block font-semibold">
-                                  {element.label}
-                                </label>
+                            <div
+                              onClick={() => handleEditClick(element)}
+                              className="cursor-pointer"
+                            >
+                              <label className="block font-semibold">
+                                {element.label}
+                              </label>
+                              {element.type === "text" && (
                                 <input
                                   type="text"
                                   placeholder={element.placeholder}
-                                  className="p-2 border border-gray-300 rounded w-full"
+                                  className="w-full p-2 border border-gray-300 rounded"
                                 />
-                              </div>
-                            )}
-                            {element.type === "textarea" && (
-                              <div>
-                                <label className="block font-semibold">
-                                  {element.label}
-                                </label>
+                              )}
+                              {element.type === "textarea" && (
                                 <textarea
                                   placeholder={element.placeholder}
-                                  className="p-2 border border-gray-300 rounded w-full"
+                                  className="w-full p-2 border border-gray-300 rounded"
                                 />
-                              </div>
-                            )}
-                            {element.type === "select" && (
-                              <div>
-                                <label className="block font-semibold">
-                                  {element.label}
-                                </label>
-                                <select
-                                  className="p-2 border border-gray-300 rounded w-full"
-                                  defaultValue=""
-                                >
+                              )}
+                              {element.type === "select" && (
+                                <select className="w-full p-2 border border-gray-300 rounded">
                                   <option value="" disabled>
                                     {element.placeholder}
                                   </option>
@@ -231,45 +215,20 @@ const App = () => {
                                     </option>
                                   ))}
                                 </select>
-                              </div>
-                            )}
-                            {element.type === "date" && (
-                              <div>
-                                <label className="block font-semibold">
-                                  {element.label}
-                                </label>
+                              )}
+                              {element.type === "date" && (
                                 <input
                                   type="date"
-                                  placeholder={element.placeholder}
-                                  className="p-2 border border-gray-300 rounded w-full"
+                                  className="w-full p-2 border border-gray-300 rounded"
                                 />
-                              </div>
-                            )}
-                            {element.type === "file" && (
-                              <div className="p-4 border border-gray-300 rounded bg-gray-50">
-                                <label className="block font-semibold">
-                                  {element.label}
-                                </label>
-                                <div className="mt-2">
-                                  <FileUploadDroppable
-                                    elementId={element.id}
-                                    onDrop={handleFileDrop}
-                                  />
-                                </div>
-                                {element.files && element.files.length > 0 && (
-                                  <div className="mt-2">
-                                    <h4 className="font-semibold">
-                                      Uploaded Files
-                                    </h4>
-                                    <ul>
-                                      {element.files.map((file, idx) => (
-                                        <li key={idx}>{file.name}</li>
-                                      ))}
-                                    </ul>
-                                  </div>
-                                )}
-                              </div>
-                            )}
+                              )}
+                              {element.type === "file" && (
+                                <FileUploadDroppable
+                                  elementId={element.id}
+                                  onDrop={handleFileDrop}
+                                />
+                              )}
+                            </div>
                           </div>
                         )}
                       </Draggable>
@@ -304,7 +263,7 @@ const FileUploadDroppable = ({ elementId, onDrop }) => {
   return (
     <div
       {...getRootProps()}
-      className="border-2 border-dashed p-4 text-center cursor-pointer"
+      className="border-2 border-dashed p-4 text-center cursor-pointer rounded-md bg-gray-50"
     >
       <input {...getInputProps()} />
       <p>Drag & Drop files here, or click to select files</p>
