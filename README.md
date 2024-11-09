@@ -38,8 +38,8 @@ A customizable, drag-and-drop form builder built with **React**, **Vite**, **rea
 1. **Clone the repository**:
 
    ```bash
-   git clone [repository-url]
-   cd [repository-name]
+   git clone https://github.com/BravesDevs/fiyge-fe.git
+   cd fiyge-fe
    ```
 
 2. **Install dependencies**:
