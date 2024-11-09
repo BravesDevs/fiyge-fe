@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { useDropzone } from "react-dropzone";
 import axios from "axios";
@@ -6,6 +6,7 @@ import PropertiesPanel from "./components/PropertiesPanel";
 
 const App = () => {
   const [elements, setElements] = useState([]);
+  const [savedForms, setSavedForms] = useState([]);
   const [currentEditingElement, setCurrentEditingElement] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
 
@@ -47,6 +48,14 @@ const App = () => {
       required: false,
     },
   ];
+
+  useEffect(() => {
+    // Fetch saved forms from the database
+    axios
+      .get("http://localhost:3000/api/forms")
+      .then((response) => setSavedForms(response.data))
+      .catch((error) => console.error("Error fetching saved forms:", error));
+  }, []);
 
   const updateElement = (updatedElement) => {
     setElements((prevElements) =>
@@ -102,11 +111,25 @@ const App = () => {
         payload
       );
       alert(`Form saved successfully! Form ID: ${response.data.form._id}`);
+      setSavedForms((prevForms) => [...prevForms, response.data.form]);
     } catch (error) {
       console.error("Error saving form:", error);
       alert("Failed to save form. Please try again.");
     } finally {
       setIsSaving(false);
+    }
+  };
+
+  const loadForm = async (formId) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:3000/api/forms/${formId}`
+      );
+      const formData = response.data.form_data;
+      setElements(formData.elements);
+    } catch (error) {
+      console.error("Error loading form:", error);
+      alert("Failed to load form. Please try again.");
     }
   };
 
@@ -119,12 +142,6 @@ const App = () => {
           disabled={isSaving}
         >
           {isSaving ? "Saving..." : "Save Form"}
-        </button>
-        <button
-          onClick={() => alert("Edit Form")}
-          className="px-4 py-2 bg-green-500 text-white rounded-lg"
-        >
-          Edit Form
         </button>
       </div>
 
@@ -249,6 +266,31 @@ const App = () => {
           onClose={handleClosePanel}
         />
       )}
+
+      {/* Saved Forms Section */}
+      <div className="mt-10">
+        <h3 className="text-xl font-bold mb-4">Saved Forms</h3>
+        <div className="grid grid-cols-2 gap-4">
+          {savedForms.length > 0 ? (
+            savedForms.map((form) => (
+              <div
+                key={form._id}
+                className="p-4 bg-gray-100 rounded-lg shadow-md"
+              >
+                <p className="font-semibold">{form.form_name}</p>
+                <button
+                  onClick={() => loadForm(form._id)}
+                  className="mt-2 px-4 py-2 bg-blue-600 text-white rounded-lg"
+                >
+                  Load Form
+                </button>
+              </div>
+            ))
+          ) : (
+            <p>No saved forms available</p>
+          )}
+        </div>
+      </div>
     </div>
   );
 };
@@ -256,17 +298,15 @@ const App = () => {
 const FileUploadDroppable = ({ elementId, onDrop }) => {
   const { getRootProps, getInputProps } = useDropzone({
     onDrop: (acceptedFiles) => onDrop(acceptedFiles, elementId),
-    accept: ".jpg,.jpeg,.png,.gif,.pdf,.doc,.docx",
-    multiple: true,
   });
 
   return (
     <div
       {...getRootProps()}
-      className="border-2 border-dashed p-4 text-center cursor-pointer rounded-md bg-gray-50"
+      className="border-dashed border-2 border-gray-300 p-4 rounded cursor-pointer"
     >
       <input {...getInputProps()} />
-      <p>Drag & Drop files here, or click to select files</p>
+      <p className="text-center text-gray-500">Drag and drop files here</p>
     </div>
   );
 };
