@@ -1,11 +1,11 @@
 import { useState } from "react";
 
 const EditableFormElement = ({ element, updateElement }) => {
-  const [isEditing, setIsEditing] = useState(true); // Track if it's in edit mode
+  const [isEditing, setIsEditing] = useState(true);
   const [label, setLabel] = useState(element.label);
   const [placeholder, setPlaceholder] = useState(element.placeholder);
-  const [rows, setRows] = useState(element.rows || 3); // Default to 3 rows for TextArea
-  const [cols, setCols] = useState(element.cols || 20); // Default to 20 columns for TextArea
+  const [rows, setRows] = useState(element.rows || 3);
+  const [cols, setCols] = useState(element.cols || 20);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -22,7 +22,7 @@ const EditableFormElement = ({ element, updateElement }) => {
 
   const handleSave = () => {
     updateElement(element.id, { label, placeholder, rows, cols });
-    setIsEditing(false); // Switch to view mode after saving
+    setIsEditing(false);
   };
 
   return (
@@ -74,7 +74,7 @@ const EditableFormElement = ({ element, updateElement }) => {
             className="mt-2 p-1 bg-blue-500 text-white rounded"
             onClick={handleSave}
           >
-            Save
+            Save This
           </button>
         </>
       ) : (
